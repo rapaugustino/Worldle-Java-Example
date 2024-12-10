@@ -4,18 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * The WordleGame class simulates a word-guessing game similar to Wordle.
+ * It manages game state, user input, and feedback on guesses, tracking the
+ * player's attempts to guess a secret word within a maximum number of tries.
+ */
 public class WordleGame {
+    // 2D Array to represent the guess grid, initialized with empty strings
     private final String[][] grid;
     private Scanner scanner;
     Scanner keyboard = new Scanner(System.in);
-    protected final byte MAX_ATTEMPTS = 6;
-    protected String secretWord;
-    private boolean isGameOver;
-    private byte currentAttempt;
-    private int attempts;
-    private Player player;
-    private int gameScore;
 
+    // Constants and fields related to game mechanisms
+    protected final byte MAX_ATTEMPTS = 6; // Maximum number of attempts allowed
+    protected String secretWord; // The word to be guessed
+    private boolean isGameOver; // Indicates if the game has ended
+    private byte currentAttempt; // Tracks the current attempt index
+    private int attempts; // Number of attempts made by the player
+    private Player player; // The current player using the game
+    private int gameScore; // The score of the current game session
+
+    /**
+     * Constructs a new WordleGame session with a specific player and secret word.
+     *
+     * @param player The player participating in this game session.
+     * @param secretWord The word to be guessed, upon which the game relies.
+     */
     public WordleGame(Player player, String secretWord) {
         setPlayer(player);
         setSecretWord(secretWord);
@@ -26,10 +40,12 @@ public class WordleGame {
         this.grid = new String[MAX_ATTEMPTS][secretWord.length()];
         for (int i = 0; i < MAX_ATTEMPTS; i++) {
             for (int j = 0; j < secretWord.length(); j++) {
-                grid[i][j] = " "; // Initialize as empty strings
+                grid[i][j] = " "; // Initialize grid as empty
             }
         }
     }
+
+    // Getter and setter methods for various game attributes
 
     public byte getMAX_ATTEMPTS() {
         return MAX_ATTEMPTS;
@@ -83,6 +99,10 @@ public class WordleGame {
         this.secretWord = secretWord;
     }
 
+    /**
+     * Initializes a new game session, resetting the grid and necessary fields,
+     * and prints the initial empty grid layout.
+     */
     public void startGame() {
         setIsGameOver(false);
         setCurrentAttempt((byte) 0);
@@ -90,6 +110,13 @@ public class WordleGame {
         printGrid();
     }
 
+    /**
+     * Submits a player's guess, providing feedback on the guess's validity
+     * and correctness, and updates game state accordingly.
+     *
+     * @param guess The word guessed by the player.
+     * @return A boolean representing whether the guess was valid and accepted.
+     */
     public boolean submitGuess(String guess) {
         if (isGameOver) {
             System.out.println("Game over");
@@ -104,30 +131,26 @@ public class WordleGame {
         if (guess.equals(secretWord)) {
             System.out.println("Congratulations! You've guessed the word correctly.");
             isGameOver = true;
-
         } else if (attempts >= MAX_ATTEMPTS - 1) {
             System.out.println("Out of attempts! The secret word was: " + secretWord);
             isGameOver = true;
         }
-      return true;
+
+        return true;
     }
 
-//    public List<CharacterFeedback> getFeedback(String guess) {
-//        List<CharacterFeedback> feedback = new ArrayList<CharacterFeedback>();
-//        for (int i = 0; i < 5; i++) {
-//            char guessedChar = guess.charAt(i);
-//            boolean isCorrectPosition = guessedChar == secretWord.charAt(i);
-//            boolean isPresentInWord = secretWord.contains(Character.toString(guessedChar));
-//            feedback.add(new CharacterFeedback(guessedChar, isCorrectPosition, isPresentInWord));
-//        }
-//      return feedback;
-//    }
-
+    /**
+     * Ends the current game session, marking the game as complete.
+     */
     public void endSession() {
         setIsGameOver(true);
         System.out.println("Game session ended");
     }
 
+    /**
+     * Prints the current state of the game grid, displaying all previous guesses
+     * and the feedback they're matched with.
+     */
     public void printGrid() {
         System.out.println("┌───┬───┬───┬───┬───┐");
         for (int i = 0; i < grid.length; i++) {
@@ -150,7 +173,12 @@ public class WordleGame {
         System.out.println("└───┴───┴───┴───┴───┘");
     }
 
-
+    /**
+     * Fills the game grid with a player's guess and updates feedback.
+     * Clears the console and reprints the grid layout after each guess.
+     *
+     * @param guess The word the player has guessed.
+     */
     public void fillGrid(String guess) {
         if (submitGuess(guess)) {
             Attempt attempt = new Attempt(guess, secretWord);
